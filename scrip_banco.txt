@@ -1,0 +1,109 @@
+CREATE SCHEMA `petshop`;
+
+CREATE TABLE IF NOT EXISTS tb_status (
+  `id_status` INT NOT NULL AUTO_INCREMENT,
+  `status` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_status`));
+
+CREATE TABLE IF NOT EXISTS tb_genero (
+  `id_genero` INT NOT NULL AUTO_INCREMENT,
+  `genero` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_genero`));
+
+CREATE TABLE IF NOT EXISTS tb_contato (
+  `id_contato` INT NOT NULL AUTO_INCREMENT,
+  `telefone` CHAR(11) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_contato`));
+
+CREATE TABLE IF NOT EXISTS tb_endereco (
+  `id_endereco` INT NOT NULL AUTO_INCREMENT,
+  `rua` VARCHAR(70) NOT NULL,
+  `bairro` VARCHAR(50) NOT NULL,
+  `cep` CHAR(8) NOT NULL,
+  `cidadde` VARCHAR(45) NOT NULL,
+  `estado` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_endereco`));
+
+CREATE TABLE IF NOT EXISTS tb_fornecedor (
+  `id_fornecedor` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(45) NOT NULL,
+  `razao_social` VARCHAR(45) NOT NULL,
+  `cnpj` CHAR(14) NOT NULL,
+  `contato` INT NOT NULL,
+  `endereco` INT NOT NULL,
+  `status` INT NOT NULL,
+  PRIMARY KEY (`id_fornecedor`),
+    FOREIGN KEY (`contato`) REFERENCES tb_contato (`id_contato`),
+    FOREIGN KEY (`endereco`) REFERENCES tb_endereco (`id_endereco`),
+    FOREIGN KEY (`status`) REFERENCES tb_status (`id_status`));
+
+CREATE TABLE IF NOT EXISTS tb_produto (
+  `id_produto` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(50) NOT NULL,
+  `preco` INT NOT NULL,
+  `fornecedor` INT NOT NULL,
+  PRIMARY KEY (`id_produto`),
+    FOREIGN KEY (`fornecedor`) REFERENCES tb_fornecedor (`id_fornecedor`));
+
+CREATE TABLE IF NOT EXISTS tb_estoque (
+  `id_estoque` INT NOT NULL AUTO_INCREMENT,
+  `cod_produto` INT NOT NULL,
+  `qtda` INT NOT NULL,
+  PRIMARY KEY (`id_estoque`),
+    FOREIGN KEY (`cod_produto`) REFERENCES tb_produto (`id_produto`));
+
+CREATE TABLE IF NOT EXISTS tb_funcionario (
+  `id_funcionario` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(45) NOT NULL,
+  `sobrenome` VARCHAR(45) NOT NULL,
+  `cpf` CHAR(11) NOT NULL,
+  `contato` INT NOT NULL,
+  `endereco` INT NOT NULL,
+  `status` INT NOT NULL,
+  `genero` INT NOT NULL,
+  PRIMARY KEY (`id_funcionario`),
+    FOREIGN KEY (`endereco`) REFERENCES tb_endereco (`id_endereco`),
+    FOREIGN KEY (`contato`) REFERENCES tb_contato (`id_contato`),
+    FOREIGN KEY (`status`) REFERENCES tb_status (`id_status`),
+    FOREIGN KEY (`genero`) REFERENCES tb_genero (`id_genero`));
+
+CREATE TABLE IF NOT EXISTS tb_unidade_petshop (
+  `id_uni_petshop` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(45) NOT NULL,
+  `cnpj` CHAR(14) NOT NULL,
+  `funcionarios` INT NOT NULL,
+  `endereco` INT NOT NULL,
+  `contato` INT NOT NULL,
+  PRIMARY KEY (`id_uni_petshop`),
+    FOREIGN KEY (`endereco`) REFERENCES tb_endereco (`id_endereco`),
+    FOREIGN KEY (`contato`) REFERENCES tb_contato (`id_contato`),
+    FOREIGN KEY (`funcionarios`) REFERENCES tb_funcionario (`id_funcionario`));
+
+CREATE TABLE IF NOT EXISTS tb_cliente (
+  `id_cliente` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(45) NOT NULL,
+  `sobrenome` VARCHAR(45) NOT NULL,
+  `cpf` CHAR(11) NOT NULL,
+  `contato` INT NOT NULL,
+  `endereco` INT NOT NULL,
+  `status` INT NOT NULL,
+  `genero` INT NOT NULL,
+  PRIMARY KEY (`id_cliente`),
+    FOREIGN KEY (`contato`)REFERENCES tb_contato (`id_contato`),
+    FOREIGN KEY (`endereco`)REFERENCES tb_endereco (`id_endereco`),
+    FOREIGN KEY (`status`)REFERENCES tb_status (`id_status`),
+    FOREIGN KEY (`genero`)REFERENCES tb_genero (`id_genero`));
+
+CREATE TABLE IF NOT EXISTS tb_animal (
+  `id_animal` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(45) NOT NULL,
+  `especie` VARCHAR(45) NOT NULL,
+  `classe` VARCHAR(45) NOT NULL,
+  `dono` INT NOT NULL,
+  `status` INT NOT NULL,
+  `genero` INT NOT NULL,
+  PRIMARY KEY (`id_animal`),
+    FOREIGN KEY (`dono`)REFERENCES tb_cliente (`id_cliente`),
+    FOREIGN KEY (`status`)REFERENCES tb_status (`id_status`),
+    FOREIGN KEY (`genero`)REFERENCES tb_genero (`id_genero`));
